@@ -1,0 +1,71 @@
+import pandas as pd
+
+class BudgetTracker:
+    def __init__(self):
+        self.balance = 0
+        self.entries = []
+
+    def add_income(self, amount):
+        """Add income to the balance."""
+        self.balance += amount
+        self.entries.append(("Income", amount))
+        print(f"Income added: ${amount:.2f}. Current balance: ${self.balance:.2f}.")
+
+    def add_expense(self, description, amount):
+        """Add an expense and subtract it from the balance."""
+        if amount <= self.balance:
+            self.balance -= amount
+            self.entries.append((f"Expense: {description}", -amount))
+            print(f"Expense added: {description} for ${amount:.2f}. Current balance: ${self.balance:.2f}.")
+        else:
+            print(f"Insufficient funds. You only have ${self.balance:.2f}.")
+
+    def display_balance(self):
+        """Display the current balance."""
+        print(f"Current balance: ${self.balance:.2f}.")
+
+    def display_entries(self):
+        """Display all income and expense entries."""
+        print("\n--- Entries ---")
+        for description, amount in self.entries:
+            print(f"{description}: ${amount:.2f}")
+
+    def save_to_excel(self, filename="budget_data.xlsx"):
+        """Save all income and expense entries to an Excel file."""
+        df = pd.DataFrame(self.entries, columns=["Description", "Amount"])
+        df.to_excel(filename, index=False, engine='openpyxl')
+        print(f"Data saved to {filename}")
+
+def main():
+    tracker = BudgetTracker()
+    while True:
+        print("\n--- Budget Tracker ---")
+        print("1. Add Income")
+        print("2. Add Expense")
+        print("3. Display Balance")
+        print("4. Display Entries")
+        print("5. Save to Excel")
+        print("6. Exit")
+        choice = input("Choose an option (1/2/3/4/5/6): ")
+
+        if choice == "1":
+            amount = float(input("Enter income amount: $"))
+            tracker.add_income(amount)
+        elif choice == "2":
+            description = input("Enter expense description: ")
+            amount = float(input("Enter expense amount: $"))
+            tracker.add_expense(description, amount)
+        elif choice == "3":
+            tracker.display_balance()
+        elif choice == "4":
+            tracker.display_entries()
+        elif choice == "5":
+            tracker.save_to_excel()
+        elif choice == "6":
+            print("Exiting Budget Tracker.")
+            break
+        else:
+            print("Invalid choice. Please select a valid option.")
+
+if __name__ == "__main__":
+    main()
